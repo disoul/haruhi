@@ -9,6 +9,9 @@ type HaruhiErrorCode uint16
 
 const (
 	UNKNOWN_ERROR HaruhiErrorCode = 0001
+
+	JSON_DECODE_ERROR HaruhiErrorCode = 0002
+	UNEXPECT_REGISTER HaruhiErrorCode = 0003
 )
 
 // HaruhiError error contaienr for haruhi

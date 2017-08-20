@@ -1,4 +1,4 @@
-package herror
+package haruhi
 
 import (
 	"fmt"
@@ -11,7 +11,8 @@ const (
 	UNKNOWN_ERROR HaruhiErrorCode = 0001
 
 	JSON_DECODE_ERROR HaruhiErrorCode = 0002
-	UNEXPECT_REGISTER HaruhiErrorCode = 0003
+	JSON_ENCODE_ERROR HaruhiErrorCode = 0003
+	UNEXPECT_REGISTER HaruhiErrorCode = 0004
 )
 
 // HaruhiError error contaienr for haruhi

@@ -1,4 +1,4 @@
-package manager
+package haruhi
 
 // TaskType task base type
 type TaskType struct {
@@ -13,22 +13,22 @@ type Task struct {
 	DirectivePath string
 }
 
-// RegisteredTask tasks data in memory
+// RegisteredTasks tasks data in memory
 var RegisteredTasks map[string]Task
 
-func registerTask(name string, typename string, path string, depends []string) {
+func registerTask(data RegisterData) {
 	dependTasks := make([]Task, 0)
 
-	for _, dependTask := range depends {
+	for _, dependTask := range data.Depend {
 		dependTasks = append(dependTasks, RegisteredTasks[dependTask])
 	}
 
 	// TODO: save in mongo
 
-	RegisteredTasks[name] = Task{
-		dependTasks,
-		TaskType{typename},
-		name,
-		path,
+	RegisteredTasks[data.Name] = Task{
+		Depends:       dependTasks,
+		Type:          TaskType{data.Typename},
+		Name:          data.Name,
+		DirectivePath: data.Path,
 	}
 }

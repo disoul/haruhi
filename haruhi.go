@@ -1,5 +1,12 @@
 package haruhi
 
+import (
+	"gopkg.in/mgo.v2"
+)
+
+var MongoTaskCollection *mgo.Collection
+
 func main() {
-	return
+	MongoTaskCollection := CreateMongoCollection("http://localhost")
+	CreateManagerServer(7777)
 }

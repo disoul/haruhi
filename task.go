@@ -16,7 +16,7 @@ type Task struct {
 // RegisteredTasks tasks data in memory
 var RegisteredTasks map[string]Task
 
-func registerTask(data RegisterData) {
+func registerTask(data RegisterData) error {
 	dependTasks := make([]Task, 0)
 
 	for _, dependTask := range data.Depend {
@@ -24,11 +24,17 @@ func registerTask(data RegisterData) {
 	}
 
 	// TODO: save in mongo
-
-	RegisteredTasks[data.Name] = Task{
+	newTask := Task{
 		Depends:       dependTasks,
 		Type:          TaskType{data.Typename},
 		Name:          data.Name,
 		DirectivePath: data.Path,
 	}
+
+	err := saveTask(newTask)
+	if err != nil {
+		return err
+	}
+
+	RegisteredTasks[data.Name] = newTask
 }

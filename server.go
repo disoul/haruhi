@@ -55,7 +55,15 @@ func registerTaskHandle(w http.ResponseWriter, r *http.Request) (string, HaruhiE
 		}
 	}
 
-	registerTask(data)
+	err = registerTask(data)
+	if err != nil {
+		return "", HaruhiError{
+			err,
+			"registerTask Error",
+			JSON_ENCODE_ERROR,
+		}
+	}
+
 	res, err := HaruhiResponse{
 		Data: "ok",
 	}.Encode()

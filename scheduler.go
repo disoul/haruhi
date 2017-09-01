@@ -1,4 +1,4 @@
-package haruhi
+package main
 
 import (
 	"errors"

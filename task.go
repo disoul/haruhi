@@ -1,4 +1,4 @@
-package haruhi
+package main
 
 // TaskType task base type
 type TaskType struct {

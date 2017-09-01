@@ -1,4 +1,4 @@
-package haruhi
+package main
 
 // DirectiveState directive action types
 type DirectiveState uint8

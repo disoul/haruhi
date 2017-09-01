@@ -23,7 +23,6 @@ func registerTask(data RegisterData) error {
 		dependTasks = append(dependTasks, RegisteredTasks[dependTask])
 	}
 
-	// TODO: save in mongo
 	newTask := Task{
 		Depends:       dependTasks,
 		Type:          TaskType{data.Typename},
@@ -37,4 +36,6 @@ func registerTask(data RegisterData) error {
 	}
 
 	RegisteredTasks[data.Name] = newTask
+
+	return nil
 }

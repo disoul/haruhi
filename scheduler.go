@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 )
 
 type TaskNode struct {
@@ -35,14 +36,14 @@ func NewTaskQuery(task Task) (TaskQuery, error) {
 	return query, nil
 }
 
-func (query TaskQuery) appendTask(tasknode *TaskNode) {
-	query.nodes[tasknode.task.Name] = tasknode
+func (query *TaskQuery) appendTask(tasknode *TaskNode) {
 	dependTasks := tasknode.task.Depends
-
-	// 当没有依赖或者依赖全部连接完时直接返回
 	if depTaskLen := len(dependTasks); depTaskLen == 0 || depTaskLen == len(tasknode.input) {
 		return
 	}
+	query.nodes[tasknode.task.Name] = tasknode
+
+	// 当没有依赖或者依赖全部连接完时直接返回
 
 	for _, dependTask := range dependTasks {
 		var dependTasknode *TaskNode
@@ -59,8 +60,10 @@ func (query TaskQuery) appendTask(tasknode *TaskNode) {
 	}
 }
 
-func (query TaskQuery) topologySort() error {
-	for len(query.execQuery) != len(query.nodes) {
+func (query *TaskQuery) topologySort() error {
+	nodesLen := len(query.nodes)
+	for len(query.execQuery) != nodesLen {
+		fmt.Printf("currentExecLen: %v, nodesLen: %v\n", len(query.execQuery), len(query.nodes))
 		currentTaskName, err := query.findZeroInputNode()
 		if err != nil {
 			return err
@@ -69,12 +72,13 @@ func (query TaskQuery) topologySort() error {
 		currentNode := query.nodes[currentTaskName]
 		query.delTopologyInput(currentNode)
 		query.execQuery = append(query.execQuery, currentNode)
+		delete(query.nodes, currentTaskName)
 	}
 
 	return nil
 }
 
-func (query TaskQuery) findZeroInputNode() (string, error) {
+func (query *TaskQuery) findZeroInputNode() (string, error) {
 	for name, node := range query.nodes {
 		if len(node.input) == 0 {
 			return name, nil
@@ -84,7 +88,7 @@ func (query TaskQuery) findZeroInputNode() (string, error) {
 	return "", errors.New("find loop in task query")
 }
 
-func (query TaskQuery) delTopologyInput(tasknode *TaskNode) {
+func (query *TaskQuery) delTopologyInput(tasknode *TaskNode) {
 	for _, node := range query.nodes {
 		delIndex := -1
 		for i, inputnode := range node.input {

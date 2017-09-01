@@ -7,6 +7,6 @@ import (
 var MongoTaskCollection *mgo.Collection
 
 func main() {
-	MongoTaskCollection := CreateMongoCollection("http://localhost")
-	CreateManagerServer(7777)
+	// MongoTaskCollection := CreateMongoCollection("http://localhost")
+	// CreateManagerServer(7777)
 }

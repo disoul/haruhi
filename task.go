@@ -7,30 +7,30 @@ type TaskType struct {
 
 // Task base task struct
 type Task struct {
-	Depends       []Task
+	Depends       []*Task
 	Type          TaskType
 	Name          string
 	DirectivePath string
 }
 
 // RegisteredTasks tasks data in memory
-var RegisteredTasks map[string]Task
+var RegisteredTasks map[string]*Task
 
 func registerTask(data RegisterData) error {
-	dependTasks := make([]Task, 0)
+	dependTasks := make([]*Task, 0)
 
 	for _, dependTask := range data.Depend {
 		dependTasks = append(dependTasks, RegisteredTasks[dependTask])
 	}
 
-	newTask := Task{
+	newTask := &Task{
 		Depends:       dependTasks,
 		Type:          TaskType{data.Typename},
 		Name:          data.Name,
 		DirectivePath: data.Path,
 	}
 
-	err := saveTask(newTask)
+	err := saveTask(*newTask)
 	if err != nil {
 		return err
 	}

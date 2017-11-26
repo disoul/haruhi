@@ -4,9 +4,11 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-var MongoTaskCollection *mgo.Collection
+var MongoSession *mgo.Session
 
 func main() {
-	// MongoTaskCollection := CreateMongoCollection("http://localhost")
-	// CreateManagerServer(7777)
+	MongoSession := CreateMongoSession("http://localhost")
+	defer MongoSession.Close()
+
+	CreateManagerServer(7777)
 }

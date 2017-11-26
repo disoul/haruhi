@@ -4,19 +4,18 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
-func CreateMongoCollection(host string) *mgo.Collection {
+func CreateMongoSession(host string) *mgo.Session {
 	session, err := mgo.Dial(host)
 	if err != nil {
 		panic(err)
 	}
 
-	c := session.DB("haruhi").C("task")
-
-	return c
+	return session
 }
 
 func saveTask(task Task) error {
-	err := MongoTaskCollection.Insert(&task)
+	c := MongoSession.DB("haruhi").C("task")
+	err := c.Insert(&task)
 	if err != nil {
 		return err
 	}

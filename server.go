@@ -55,7 +55,9 @@ func registerTaskHandle(w http.ResponseWriter, r *http.Request) (string, HaruhiE
 		}
 	}
 
+	fmt.Print("register Start")
 	err = registerTask(data)
+	fmt.Print("registerOk")
 	if err != nil {
 		return "", HaruhiError{
 			err,
@@ -78,6 +80,11 @@ func registerTaskHandle(w http.ResponseWriter, r *http.Request) (string, HaruhiE
 
 	return res, HaruhiError{}
 }
+
+/*
+func startTask(w http.ResponseWriter, r *http.Response) (string, HaruhiError) {
+}
+*/
 
 func (fn HaruhiHTTPHandle) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	res, err := fn(w, r)
@@ -103,7 +110,9 @@ func (fn HaruhiHTTPHandle) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 // CreateManagerServer create a manager http server
 func CreateManagerServer(port int) {
-	err := http.ListenAndServe(fmt.Sprintf("%v", port), nil)
+	http.HandleFunc("/register", HaruhiHTTPHandle(registerTaskHandle).ServeHTTP)
+
+	err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 
 	if err != nil {
 		herr := HaruhiError{

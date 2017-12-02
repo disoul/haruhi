@@ -33,4 +33,5 @@ func main() {
 
 func initTask() {
 	RegisteredTasks = make(map[string]*Task)
+	HaruhiTaskQuery = make(map[string]*TaskQuery)
 }

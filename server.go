@@ -33,6 +33,12 @@ type RegisterData struct {
 	Path     string
 }
 
+type finishTaskData struct {
+	queryId  int
+	taskName string
+	output   HaruhiOutput
+}
+
 func registerTaskHandle(w http.ResponseWriter, r *http.Request) (string, HaruhiError) {
 	var data RegisterData
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -81,10 +87,28 @@ func registerTaskHandle(w http.ResponseWriter, r *http.Request) (string, HaruhiE
 	return res, HaruhiError{}
 }
 
-/*
-func startTask(w http.ResponseWriter, r *http.Response) (string, HaruhiError) {
+func finishTask(w http.ResponseWriter, r *http.Response) (string, HaruhiError) {
+	var data finishTaskData
+	err := json.NewDecoder(r.Body).Decode(&data)
+	if err != nil {
+		return "", HaruhiError{
+			err,
+			"register: can not decode finishTaskData",
+			JSON_DECODE_ERROR,
+		}
+	}
+
+	taskQuery, ok := HaruhiTaskQuery[data.queryId]
+	if !ok {
+		return "", HaruhiError{
+			Error: fmt.Errorf("can not find queryid in querymap, id: %v", data.queryId),
+		}
+	}
+
+	taskQuery.finish()
+
+	return "", nil
 }
-*/
 
 func (fn HaruhiHTTPHandle) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	res, err := fn(w, r)

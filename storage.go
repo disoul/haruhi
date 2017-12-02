@@ -39,13 +39,21 @@ func dbInit(db *gorm.DB) {
 }
 
 func saveTask(querytask Task) (*Task, error) {
-	//var task Task
-	//err := PostgresDb.Where(Task{Name: querytask.Name}).Assign(querytask).FirstOrCreate(&task).Error
-	fmt.Printf("\ndb %v", PostgresDb)
-	if PostgresDb.NewRecord(querytask) {
-		fmt.Print("no record")
-		PostgresDb.Create(&querytask)
+	var task Task
+	err := PostgresDb.Where(Task{Name: querytask.Name}).Assign(querytask).FirstOrCreate(&task).Error
+	if (err != nil) {
+		return &task, err
 	}
 
-	return &querytask, nil
+	return &task, nil
+}
+
+func getTask(querytask Task) (*Task, error) {
+	var task Task
+	err := PostgresDb.Where(&querytask).First(&task).Error
+	if (err != nil) {
+		return &task, err
+	}
+
+	return &task, nil
 }

@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 )
 
 type TaskNode struct {
@@ -11,9 +12,12 @@ type TaskNode struct {
 }
 
 type TaskQuery struct {
+	id        string
 	nodes     map[string]*TaskNode
 	execQuery []*TaskNode
 }
+
+var HaruhiTaskQuery map[string]*TaskQuery
 
 func NewTaskQuery(task Task) (TaskQuery, error) {
 	inputnode := TaskNode{
@@ -107,4 +111,16 @@ func (query *TaskQuery) delTopologyInput(tasknode *TaskNode) {
 			node.input = node.input[:len(node.input)-1]
 		}
 	}
+}
+
+func (query *TaskQuery) run() {
+
+}
+
+func (query *TaskQuery) finish(data finishTaskData) error {
+	taskNode, ok := query.nodes[data.taskName]
+	if !ok {
+		return fmt.Errorf("finish data taskName error %v", data.taskName)
+	}
+
 }

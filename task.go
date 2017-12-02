@@ -1,16 +1,16 @@
 package main
 
 import "github.com/jinzhu/gorm"
-import "fmt"
 
 // Task base task struct
 type Task struct {
 	gorm.Model
 	Depends       []*Task
-	Type          string `gorm:"size:50"`
-	TypeId        int
-	Name          string `gorm:"size:50;unique"`
-	DirectivePath string `gorm:"size:100`
+	Type          string         `gorm:"size:50"`
+	Name          string         `gorm:"size:50;unique"`
+	DirectivePath string         `gorm:"size:100"`
+	Status        DirectiveState `gorm:"-"`
+	Output        HaruhiOutput   `gorm:"-"`
 }
 
 // RegisteredTasks tasks data in memory
@@ -30,12 +30,10 @@ func registerTask(data RegisterData) error {
 		DirectivePath: data.Path,
 	}
 
-	fmt.Print("SaveTask Start")
 	task, err := saveTask(newTask)
 	if err != nil {
 		return err
 	}
-	fmt.Print("SaveTask Ok")
 
 	RegisteredTasks[data.Name] = task
 

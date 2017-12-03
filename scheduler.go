@@ -13,6 +13,7 @@ type TaskNode struct {
 
 type TaskQuery struct {
 	id        string
+	current   int
 	nodes     map[string]*TaskNode
 	execQuery []*TaskNode
 }
@@ -26,6 +27,7 @@ func NewTaskQuery(task Task) (TaskQuery, error) {
 	}
 
 	query := TaskQuery{
+		current:   0,
 		nodes:     make(map[string]*TaskNode),
 		execQuery: make([]*TaskNode, 0),
 	}
@@ -114,7 +116,30 @@ func (query *TaskQuery) delTopologyInput(tasknode *TaskNode) {
 }
 
 func (query *TaskQuery) run() {
+	query.startCurrentTask()
+}
 
+func (query *TaskQuery) startCurrentTask() error {
+	taskNode := query.execQuery[query.current]
+	if len(taskNode.input) != 0 {
+		input := make(map[string]interface{})
+		for _, inputNode := range taskNode.input {
+			output := inputNode.task.Output
+			input[inputNode.task.Name] = output
+		}
+
+		_, err := sendDirective(*taskNode.task, Directive{action: TASK_INPUT, data: input})
+		if err != nil {
+			return err
+		}
+	}
+
+	_, err := sendDirective(*taskNode.task, Directive{action: TASK_START})
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (query *TaskQuery) finish(data finishTaskData) error {
@@ -123,4 +148,20 @@ func (query *TaskQuery) finish(data finishTaskData) error {
 		return fmt.Errorf("finish data taskName error %v", data.taskName)
 	}
 
+	taskNode.task.Output = data.output
+	// finish TaskQuery
+	if query.current == len(query.execQuery)-1 {
+		fmt.Printf("/n Task Query Finish, Id: %v \n", query.id)
+		// TODO: save in postgres
+		delete(HaruhiTaskQuery, query.id)
+		return nil
+	}
+
+	query.current += 1
+	err := query.startCurrentTask()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

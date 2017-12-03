@@ -34,7 +34,7 @@ type RegisterData struct {
 }
 
 type finishTaskData struct {
-	queryId  int
+	queryId  string
 	taskName string
 	output   HaruhiOutput
 }
@@ -99,15 +99,16 @@ func finishTask(w http.ResponseWriter, r *http.Response) (string, HaruhiError) {
 	}
 
 	taskQuery, ok := HaruhiTaskQuery[data.queryId]
+	_ = taskQuery
 	if !ok {
 		return "", HaruhiError{
 			Error: fmt.Errorf("can not find queryid in querymap, id: %v", data.queryId),
 		}
 	}
 
-	taskQuery.finish()
+	// taskQuery.finish()
 
-	return "", nil
+	return "", HaruhiError{}
 }
 
 func (fn HaruhiHTTPHandle) ServeHTTP(w http.ResponseWriter, r *http.Request) {

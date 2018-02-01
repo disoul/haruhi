@@ -24,6 +24,11 @@ type Directive struct {
 	data   interface{}
 }
 
+type DirectiveRequest struct {
+	directive Directive
+	target    string
+}
+
 type DirectiveResponse struct {
 	status   int
 	output   HaruhiOutput
@@ -32,7 +37,9 @@ type DirectiveResponse struct {
 
 func sendDirective(task Task, directive Directive) (DirectiveResponse, error) {
 	var res DirectiveResponse
-	body, err := json.Marshal(directive.data)
+	requestBody := DirectiveRequest{directive, task.Name}
+
+	body, err := json.Marshal(requestBody)
 	if err != nil {
 		return res, err
 	}

@@ -1,14 +1,17 @@
 import { TaskInput, Directive, DirectiveState, DirectiveRequest, DirectiveResponse } from './interface/server';
+import { TaskModel } from './interface/task';
 import * as express from 'express';
 import { ResponseState } from './interface/statuscode';
 
-class TaskServer {
+export default class TaskServer {
   path: string
   app: express.Application
-  startTask: (input: TaskInput, taskName: string) => Promise<ResponseState>
+  taskModels: { [key: string]: TaskModel }
 
-  constructor(port?: number) {
-    this.initServer(port || 8039)
+
+  constructor(taskModels: { [k: string]: TaskModel }, port?: number) {
+    this.initServer(port || 8039);
+    this.taskModels = taskModels;
   }
 
   initServer(port: number) {
@@ -35,8 +38,9 @@ class TaskServer {
   }
 
   async handleStartTask(res: express.Response, input, target: string) {
-    let response: DirectiveResponse;
-    response.status = await this.startTask(input, target);
+    let response: DirectiveResponse = { status: ResponseState.SUCCESS };
+    const taskModel = this.taskModels[target];
+    response.status = await taskModel.hooks.startTask(input);
 
     res.json(response);
   }

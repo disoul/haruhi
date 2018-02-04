@@ -1,5 +1,9 @@
 import { ResponseState } from "./statuscode";
 
+export interface ServerOptions {
+  port?: number,
+}
+
 export interface TaskInput {
   [inputTaskName: string]: TaskOutput
 }

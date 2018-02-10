@@ -23,4 +23,6 @@ const taskModels = {
   }
 };
 
-const taskServer = new HaruhiTaskServer(taskModels, {});
+const taskServer = new HaruhiTaskServer(taskModels, {
+  haruhiAddr: 'http://127.0.0.1:7777',
+});

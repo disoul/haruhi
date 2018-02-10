@@ -19,6 +19,7 @@ export default class TaskServer {
     this.app.listen(port, () => {
       console.log('init task server on', port);
     });
+    this.path = `http://127.0.0.1:${port}`;
 
     this.app.post("/directive", this.handleHaruhiDirective)
   }

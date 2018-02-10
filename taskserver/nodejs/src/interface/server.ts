@@ -2,6 +2,7 @@ import { ResponseState } from "./statuscode";
 
 export interface ServerOptions {
   port?: number,
+  haruhiAddr: string,
 }
 
 export interface TaskInput {

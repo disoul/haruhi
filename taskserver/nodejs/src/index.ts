@@ -32,6 +32,7 @@ class HaruhiTaskServer {
 
   async registerTask(task: TaskModel) {
     try {
+      console.log('send', task.name);
       const res = await axios(`${this.haruhiHost}/register`, {
         method: 'POST',
         data: {

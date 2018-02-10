@@ -20,6 +20,19 @@ const taskModels = {
         })
       }
     }
+  },
+  exampleDepTask: {
+    name: 'exampleDepTask',
+    depends: ['exampleTask'],
+    type: 'example',
+    hooks: {
+      startTask: (input) => {
+        return new Promise((resolve) => {
+          taskFunction(input);
+          resolve(0);
+        })
+      }
+    }
   }
 };
 

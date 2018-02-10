@@ -51,7 +51,7 @@ func registerTaskHandle(w http.ResponseWriter, r *http.Request) (string, HaruhiE
 	}
 
 	for _, dependTaskName := range data.Depend {
-		if RegisteredTasks[dependTaskName].Name == "" {
+		if _, ok := RegisteredTasks[dependTaskName]; !ok {
 			return "", HaruhiError{
 				// TODO: init error
 				err,
@@ -61,7 +61,7 @@ func registerTaskHandle(w http.ResponseWriter, r *http.Request) (string, HaruhiE
 		}
 	}
 
-	fmt.Print("register Start")
+	fmt.Printf("register Start, %v", data.Name)
 	err = registerTask(data)
 	fmt.Print("registerOk")
 	if err != nil {
